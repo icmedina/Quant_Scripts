@@ -2,7 +2,10 @@
 
 This program parses economic news from the forex factory calendar.
 
-required modules: lxml & mechanize
+This script only works with Python 2.x
+
+Required modules: lxml & mechanize
+
 install lxml: sudo apt-get install python-lxml
 install lxml: pip install mechanize
 
