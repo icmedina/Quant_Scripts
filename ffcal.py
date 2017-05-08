@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 import sys
 import datetime
+import time
 import getopt
 # import codecs
 import pprint
@@ -175,5 +176,6 @@ while year <= END_YEAR:
         html = br.response().read()
         getData(html, outfile)
     year += 1
+    time.sleep(30)
 if outfile is not sys.stdout:
     outfile.close()
