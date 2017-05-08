@@ -23,13 +23,14 @@ START_YEAR = datetime.datetime.now().year
 END_YEAR = START_YEAR
 WEEKURL = r"http://www.forexfactory.com/calendar.php?week="
 MONTHURL = r"http://www.forexfactory.com/calendar.php?month="
-#OUTFILE = r"events.csv"
+OUTFILE = r"events.csv"
 USAGE = "ffcal.py <-h> <-f {filename}> <-w {last|this|next|mmmddyyyy}> <-m {last|this|next|mmmyyyy}>\n"
 #########################
 
 
 # our month list for the URL
 monthslist = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+year = START_YEAR
 
 # sets up the browser
 br = mechanize.Browser()
@@ -59,8 +60,8 @@ def getData(html, outfile):
     #if not lines:
     lines = root.find_class("calendar__row calendar_row")
 
-    # curWeekDay = None
-    curMonthDay = None
+    curWeekDate = None
+    curMonthDate = None
     time = curTime = ""
     # pp.pprint(lines)
     for event in lines:
@@ -70,17 +71,17 @@ def getData(html, outfile):
         else:
             sys.exit("BOOM")
 
-        # get the day of the month
-        weekDay = date.xpath("span")
-        monthDay = date.xpath("span/span")
-        if len(weekDay) > 0:
-            # curWeekDay = weekDay[0].text
-            # print "curWeekDay=[" + curWeekDay + "]"
-            curMonthDay = monthDay[0].text
+        # get the date of the month
+        weekDate = date.xpath("span")
+        monthDate = date.xpath("span/span")
+        if len(weekDate) > 0:
+             curWeekDate = weekDate[0].text
+             curMonthDate = monthDate[0].text
             if debug:
-                print "curMonthDay=[" + curMonthDay + "]"
-
-        # get the time
+                print "curMonthDate=[" + curMonthDate + "]"
+		print "curWeekDate=[" + curWeekDate + "]"
+        
+	# get the time
         curTime = time
         time = event.xpath("td[contains(@class, 'calendar__time')]")[0].text if len(event.xpath("td[contains(@class, 'calendar__time')]")) else ""
         if time == '' or time == None:
@@ -133,10 +134,10 @@ def getData(html, outfile):
         if debug:
             print "previous=[" + previous + "]\n"
 
-        outfile.write("{},{},{},{},{},{},{},{}\n".format(curMonthDay, time, currency, impact, nevent, actual, forecast, previous))
+        outfile.write("{} {},{},{},{},{},{},{},{}\n".format(curMonthDate, year, curweekDate, time, currency, impact, nevent, actual, forecast, previous))
 
 
-OUTFILE = ""
+#OUTFILE = ""
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], "f:hm:w:")
@@ -158,7 +159,7 @@ for opt, arg in opts:
             url = "{}{}".format(WEEKURL, arg)
         else:
             url = "{}{}".format(MONTHURL, arg)
-        sys.stderr.write("Getting {} from {}\n".format(arg, url))
+        sys.stderr.write("Parsing {} from {}\n".format(arg, url))
         br.open(url)
         html = br.response().read()
         getData(html, outfile)
@@ -171,11 +172,12 @@ outfile = open(OUTFILE, "w") if OUTFILE != "" else sys.stdout
 while year <= END_YEAR:
     for month in monthslist:
         url = "{}{}.{}".format(MONTHURL, month, year)
-        sys.stderr.write("Getting {} {} from {}\n".format(month.title(), year, url))
+        sys.stderr.write("Parsing {} {} from {}\n".format(month.title(), year, url))
         br.open(url)
         html = br.response().read()
         getData(html, outfile)
+	time.sleep(20)
     year += 1
-    time.sleep(30)
+    
 if outfile is not sys.stdout:
     outfile.close()
