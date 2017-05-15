@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 
 import urllib2 		
-#import urllib2.request		# python3.5
+#import urllib.request		# python3.5
 import re
 import json
 
@@ -41,7 +41,7 @@ def getPrice(symbols):
     data = json.loads(htmlContent)
     printPriceDates(symbol,data)
 
-## Print Prices and Dates ## 
+# Print Prices and Dates
 def printPriceDates(symbol,data):
   priceTime = 0
   outfile = symbol+"-"+period+".csv"
