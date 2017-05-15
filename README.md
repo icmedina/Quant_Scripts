@@ -1,4 +1,8 @@
-# forexfactory_calendar
+# Quant Collection
+
+Scripts I created and modified for extracting and mining forex data
+
+forexfactory_calendar
 
 This program parses economic news from the forex factory calendar.
 
