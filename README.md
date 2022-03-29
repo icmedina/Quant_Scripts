@@ -1,6 +1,6 @@
 # Quant Collection
 
-Scripts I created and modified for extracting and mining forex data
+Scripts for extracting and mining forex data
 
 forexfactory_calendar
 
